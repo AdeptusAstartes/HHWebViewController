@@ -17,6 +17,7 @@
 @synthesize url;
 @synthesize webView;
 @synthesize toolBar;
+@synthesize shouldShowControls;
 @synthesize shouldHideNavBarOnScroll;
 @synthesize shouldHideStatusBarOnScroll;
 @synthesize shouldHideToolBarOnScroll;
@@ -26,6 +27,7 @@
     
     if (self) {
         self.url = _url;
+        self.shouldShowControls = YES;
         self.shouldHideNavBarOnScroll = YES;
         self.shouldHideStatusBarOnScroll = YES;
         self.shouldHideToolBarOnScroll = YES;
@@ -47,7 +49,9 @@
     self.webView.scrollView.delegate = self;
     [self.view addSubview: self.webView];
     
-    self.navigationController.toolbarHidden = NO;
+    //self.toolBar = self.navigationController.toolbar;
+    
+    [self createOrUpdateControls];
 }
 
 -(void)viewDidLoad {
@@ -56,6 +60,41 @@
     [self loadURL: self.url];
 
 }
+
+-(void) viewWillAppear:(BOOL)animated {
+    NSAssert(self.navigationController, @"HHWebViewController must be contained in a navigation controller.");
+    [super viewWillAppear: animated];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear: animated];
+    
+    [self.navigationController setToolbarHidden:YES animated: animated];
+}
+
+
+-(void) createOrUpdateControls {
+    if (self.shouldShowControls) {
+        self.navigationController.toolbarHidden = NO;
+        
+        float spacerWidth = 10.0f;
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            spacerWidth = 35.0f;
+        }
+        
+        if (backButton == nil) {
+            backButton = [[UIBarButtonItem alloc] initWithCustomView: [ArrowView backButtonView]];
+        }
+        
+        if (forwardButton == nil) {
+            forwardButton = [[UIBarButtonItem alloc] initWithCustomView: [ArrowView forwardButtonView]];
+        }
+
+        [self setToolbarItems: @[backButton, forwardButton]];
+    }
+}
+
 
 #pragma mark -
 #pragma mark Rotation
@@ -151,8 +190,10 @@
         }
     }
     
-    if (self.shouldHideToolBarOnScroll) {
-        [self.navigationController setToolbarHidden: NO animated: YES];
+    if (self.shouldShowControls) {
+        if (self.shouldHideToolBarOnScroll) {
+            [self.navigationController setToolbarHidden: NO animated: YES];
+        }
     }
 }
 
@@ -173,8 +214,10 @@
         }
     }
     
-    if (self.shouldHideToolBarOnScroll) {
-        [self.navigationController setToolbarHidden: YES animated: YES];
+    if (self.shouldShowControls) {
+        if (self.shouldHideToolBarOnScroll) {
+            [self.navigationController setToolbarHidden: YES animated: YES];
+        }
     }
 }
 
@@ -187,6 +230,13 @@
     }
     
     [self.webView loadRequest: [NSURLRequest requestWithURL: _url]];
+}
+
+
+-(void) setShouldShowControls:(BOOL)_shouldShowControls {
+    shouldShowControls = _shouldShowControls;
+    
+    [self createOrUpdateControls];
 }
 
 
