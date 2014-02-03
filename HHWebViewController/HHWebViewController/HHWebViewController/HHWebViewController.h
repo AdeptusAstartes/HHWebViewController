@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "HHDynamicBarButton.h"
 
 @interface HHWebViewController : UIViewController <UIWebViewDelegate, UIScrollViewDelegate> {
     NSURL *url;
@@ -43,5 +42,24 @@
 
 -(instancetype) initWithURL: (NSURL *) _url;
 -(void) loadURL: (NSURL *) _url;
+
+@end
+
+typedef enum HHWebViewButtonType {
+    kHHWebViewButtonTypeBackButton,
+    kHHWebViewButtonTypeForwardButton,
+    kHHWebViewButtonTypeReaderButton
+} HHWebViewButtonType;
+
+@interface HHDynamicBarButton : UIButton {
+    HHWebViewButtonType hhWebViewButtonType;
+}
+
+@property (nonatomic, assign) BOOL enabled;
+@property (nonatomic, assign) BOOL highlighted;
+
++(instancetype) backButtonViewWithTarget: (id) _target action: (SEL) _action;
++(instancetype) forwardButtonViewWithTarget: (id) _target action: (SEL) _action;
++(instancetype) readerButtonViewWithTarget: (id) _target action: (SEL) _action;
 
 @end
