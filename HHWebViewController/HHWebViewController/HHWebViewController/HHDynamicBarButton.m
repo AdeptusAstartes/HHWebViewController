@@ -1,21 +1,21 @@
 //
-//  ArrowView.m
+//  HHDynamicBarButton
 //  HHWebViewController
 //
 //  Created by Donald Angelillo on 2/3/14.
 //  Copyright (c) 2014 Donald Angelillo. All rights reserved.
 //
 
-#import "ArrowBarButton.h"
+#import "HHDynamicBarButton.h"
 #import <QuartzCore/QuartzCore.h>
 
-@implementation ArrowBarButton
+@implementation HHDynamicBarButton
 
--(id)initWithFrame:(CGRect)frame direction: (int) _direction target: (id) _target action: (SEL) _action {
+-(id)initWithFrame:(CGRect)frame direction: (HHWebViewButtonType) _buttonType target: (id) _target action: (SEL) _action {
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
-        isBackButton = _direction;
+        hhWebViewButtonType = _buttonType;
         
         [self addTarget: _target action: _action forControlEvents: UIControlEventTouchUpInside];
     }
@@ -23,11 +23,15 @@
 }
 
 +(instancetype) backButtonViewWithTarget:(id)_target action:(SEL)_action {
-    return [[ArrowBarButton alloc] initWithFrame: CGRectMake(0, 0, 30, 30) direction: 1 target:_target action: _action];
+    return [[HHDynamicBarButton alloc] initWithFrame: CGRectMake(0, 0, 30, 30) direction: kHHWebViewButtonTypeBackButton target:_target action: _action];
 }
 
 +(instancetype) forwardButtonViewWithTarget:(id)_target action:(SEL)_action {
-    return [[ArrowBarButton alloc] initWithFrame: CGRectMake(0, 0, 30, 30) direction: 0 target: _target action: _action];
+    return [[HHDynamicBarButton alloc] initWithFrame: CGRectMake(0, 0, 30, 30) direction: kHHWebViewButtonTypeForwardButton target: _target action: _action];
+}
+
++(instancetype) readerButtonViewWithTarget:(id)_target action:(SEL)_action {
+    return [[HHDynamicBarButton alloc] initWithFrame: CGRectMake(0, 0, 30, 30) direction: kHHWebViewButtonTypeReaderButton target: _target action: _action];
 }
 
 -(void) drawRect:(CGRect)rect {
@@ -54,8 +58,18 @@
     CGFloat y;
     CGFloat radius;
     
-    switch (isBackButton) {
-        case 0:
+    switch (hhWebViewButtonType) {
+        case kHHWebViewButtonTypeBackButton:
+            x = 9;
+            y = CGRectGetMidY(self.bounds);
+            radius = 9;
+            CGContextMoveToPoint(context, x + radius, y + radius);
+            CGContextAddLineToPoint(context, x, y);
+            CGContextAddLineToPoint(context, x + radius, y - radius);
+            CGContextStrokePath(context);
+            break;
+            
+        case kHHWebViewButtonTypeForwardButton:
             x = 21;
             y = CGRectGetMidY(self.bounds);
             radius = 9;
@@ -65,14 +79,21 @@
             CGContextStrokePath(context);
             break;
             
+        case kHHWebViewButtonTypeReaderButton:
+            CGContextSetLineWidth(context, 1.5);
             
-        case 1:
-            x = 9;
-            y = CGRectGetMidY(self.bounds);
-            radius = 9;
-            CGContextMoveToPoint(context, x + radius, y + radius);
-            CGContextAddLineToPoint(context, x, y);
-            CGContextAddLineToPoint(context, x + radius, y - radius);
+            CGContextMoveToPoint(context, 5, 5);
+            CGContextAddLineToPoint(context, 25, 5);
+            
+            CGContextMoveToPoint(context, 5, 12);
+            CGContextAddLineToPoint(context, 25, 12);
+            
+            CGContextMoveToPoint(context, 5, 19);
+            CGContextAddLineToPoint(context, 25, 19);
+            
+            CGContextMoveToPoint(context, 5, 26);
+            CGContextAddLineToPoint(context, 15, 26);
+            
             CGContextStrokePath(context);
             break;
             

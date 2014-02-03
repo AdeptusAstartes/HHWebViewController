@@ -1,5 +1,5 @@
 //
-//  ArrowView.h
+//  HHDynamicBarButton
 //  HHWebViewController
 //
 //  Created by Donald Angelillo on 2/3/14.
@@ -14,8 +14,8 @@ typedef enum HHWebViewButtonType {
     kHHWebViewButtonTypeReaderButton
 } HHWebViewButtonType;
 
-@interface ArrowBarButton : UIButton {
-    BOOL isBackButton;
+@interface HHDynamicBarButton : UIButton {
+    HHWebViewButtonType hhWebViewButtonType;
 }
 
 @property (nonatomic, assign) BOOL enabled;
@@ -23,6 +23,7 @@ typedef enum HHWebViewButtonType {
 
 +(instancetype) backButtonViewWithTarget: (id) _target action: (SEL) _action;
 +(instancetype) forwardButtonViewWithTarget: (id) _target action: (SEL) _action;
++(instancetype) readerButtonViewWithTarget: (id) _target action: (SEL) _action;
 
 
 @end

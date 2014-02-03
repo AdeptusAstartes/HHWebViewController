@@ -20,7 +20,7 @@
 		F288136E18A01AE300822166 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F288136C18A01AE300822166 /* InfoPlist.strings */; };
 		F288137018A01AE300822166 /* HHWebViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F288136F18A01AE300822166 /* HHWebViewControllerTests.m */; };
 		F288137C18A01BF000822166 /* HHWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F288137B18A01BF000822166 /* HHWebViewController.m */; };
-		F288137F18A03C6200822166 /* ArrowBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F288137E18A03C6200822166 /* ArrowBarButton.m */; };
+		F288137F18A03C6200822166 /* HHDynamicBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F288137E18A03C6200822166 /* HHDynamicBarButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,8 +52,8 @@
 		F288136F18A01AE300822166 /* HHWebViewControllerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HHWebViewControllerTests.m; sourceTree = "<group>"; };
 		F288137A18A01BF000822166 /* HHWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HHWebViewController.h; sourceTree = "<group>"; };
 		F288137B18A01BF000822166 /* HHWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HHWebViewController.m; sourceTree = "<group>"; };
-		F288137D18A03C6200822166 /* ArrowBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArrowBarButton.h; sourceTree = "<group>"; };
-		F288137E18A03C6200822166 /* ArrowBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArrowBarButton.m; sourceTree = "<group>"; };
+		F288137D18A03C6200822166 /* HHDynamicBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HHDynamicBarButton.h; sourceTree = "<group>"; };
+		F288137E18A03C6200822166 /* HHDynamicBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HHDynamicBarButton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,8 +156,8 @@
 			children = (
 				F288137A18A01BF000822166 /* HHWebViewController.h */,
 				F288137B18A01BF000822166 /* HHWebViewController.m */,
-				F288137D18A03C6200822166 /* ArrowBarButton.h */,
-				F288137E18A03C6200822166 /* ArrowBarButton.m */,
+				F288137D18A03C6200822166 /* HHDynamicBarButton.h */,
+				F288137E18A03C6200822166 /* HHDynamicBarButton.m */,
 			);
 			path = HHWebViewController;
 			sourceTree = "<group>";
@@ -257,7 +257,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F288137F18A03C6200822166 /* ArrowBarButton.m in Sources */,
+				F288137F18A03C6200822166 /* HHDynamicBarButton.m in Sources */,
 				F288135B18A01AE300822166 /* AppDelegate.m in Sources */,
 				F288135718A01AE300822166 /* main.m in Sources */,
 				F288137C18A01BF000822166 /* HHWebViewController.m in Sources */,

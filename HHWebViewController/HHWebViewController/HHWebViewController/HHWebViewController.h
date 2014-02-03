@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ArrowBarButton.h"
+#import "HHDynamicBarButton.h"
 
 @interface HHWebViewController : UIViewController <UIWebViewDelegate, UIScrollViewDelegate> {
     NSURL *url;

@@ -169,11 +169,11 @@
         }
         
         if (backButton == nil) {
-            backButton = [[UIBarButtonItem alloc] initWithCustomView: [ArrowBarButton backButtonViewWithTarget: self action: @selector(backButtonHit:)]];;
+            backButton = [[UIBarButtonItem alloc] initWithCustomView: [HHDynamicBarButton backButtonViewWithTarget: self action: @selector(backButtonHit:)]];;
         }
         
         if (forwardButton == nil) {
-            forwardButton = [[UIBarButtonItem alloc] initWithCustomView: [ArrowBarButton forwardButtonViewWithTarget: self action: @selector(forwardButtonHit:)]];
+            forwardButton = [[UIBarButtonItem alloc] initWithCustomView: [HHDynamicBarButton forwardButtonViewWithTarget: self action: @selector(forwardButtonHit:)]];
         }
         
         if (reloadButton == nil) {
@@ -184,18 +184,18 @@
             stopButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemStop target: self action: @selector(stopHit:)];
         }
         
+        if (readerButton == nil) {
+            readerButton = [[UIBarButtonItem alloc] initWithCustomView: [HHDynamicBarButton readerButtonViewWithTarget: self action: @selector(readerButtonHit:)]];
+        }
+        
         if (actionButton == nil) {
             actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemAction target: self action: @selector(actionHit:)];
         }
         
-        if (readerButton == nil) {
-            readerButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemAction target: self action: @selector(actionHit:)];
-        }
-        
         if (webViewLoadingItems > 0) {
-            [self setToolbarItems: @[backButton, forwardButton, flexiblespace, stopButton, flexiblespace, actionButton, flexiblespace, readerButton]];
+            [self setToolbarItems: @[backButton, forwardButton, flexiblespace, stopButton, flexiblespace, readerButton, flexiblespace, actionButton]];
         } else {
-            [self setToolbarItems: @[backButton, forwardButton, flexiblespace, reloadButton, flexiblespace, actionButton, flexiblespace, readerButton]];
+            [self setToolbarItems: @[backButton, forwardButton, flexiblespace, reloadButton, flexiblespace, readerButton, flexiblespace, actionButton]];
         }
         
         backButton.enabled = self.webView.canGoBack;
@@ -227,6 +227,11 @@
 -(void) actionHit: (id) sender {
     UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[self.webView.request.URL] applicationActivities: nil];
     [self presentViewController:activityController animated:YES completion:nil];
+}
+
+-(void) readerButtonHit: (id) sender {
+    [self loadURL: [NSURL URLWithString: [NSString stringWithFormat: @"http://www.readability.com/m?url=%@", [[self.url
+                                                                                                               absoluteString] stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]]]];
 }
 
 
