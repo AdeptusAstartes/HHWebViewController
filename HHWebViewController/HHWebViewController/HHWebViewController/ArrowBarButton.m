@@ -6,32 +6,28 @@
 //  Copyright (c) 2014 Donald Angelillo. All rights reserved.
 //
 
-#import "ArrowView.h"
+#import "ArrowBarButton.h"
 #import <QuartzCore/QuartzCore.h>
 
-@implementation ArrowView
+@implementation ArrowBarButton
 
-@synthesize enabled;
-@synthesize highlighted;
-
--(id)initWithFrame:(CGRect)frame andDirection: (int) _direction {
+-(id)initWithFrame:(CGRect)frame direction: (int) _direction target: (id) _target action: (SEL) _action {
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         isBackButton = _direction;
         
-        self.layer.borderWidth = 1;
-        self.layer.borderColor = [UIColor redColor].CGColor;
+        [self addTarget: _target action: _action forControlEvents: UIControlEventTouchUpInside];
     }
     return self;
 }
 
-+(instancetype) backButtonView {
-    return [[ArrowView alloc] initWithFrame: CGRectMake(0, 0, 30, 30) andDirection: 1];
++(instancetype) backButtonViewWithTarget:(id)_target action:(SEL)_action {
+    return [[ArrowBarButton alloc] initWithFrame: CGRectMake(0, 0, 30, 30) direction: 1 target:_target action: _action];
 }
 
-+(instancetype) forwardButtonView {
-    return [[ArrowView alloc] initWithFrame: CGRectMake(0, 0, 30, 30) andDirection: 0];
++(instancetype) forwardButtonViewWithTarget:(id)_target action:(SEL)_action {
+    return [[ArrowBarButton alloc] initWithFrame: CGRectMake(0, 0, 30, 30) direction: 0 target: _target action: _action];
 }
 
 -(void) drawRect:(CGRect)rect {
@@ -42,8 +38,8 @@
     CGContextSetLineJoin(context, kCGLineJoinMiter);
     CGContextSetLineWidth(context, 2);
     
-    if (self.enabled) {
-        if (self.highlighted) {
+    if (self.isEnabled) {
+        if (self.isHighlighted) {
             CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
         } else {
             CGContextSetStrokeColorWithColor(context, self.tintColor.CGColor);
@@ -85,6 +81,17 @@
     }
     
     
+}
+
+-(void) setHighlighted:(BOOL)highlighted {
+    [super setHighlighted: highlighted];
+    [self setNeedsDisplay];
+    
+}
+
+-(void) setEnabled:(BOOL)enabled {
+    [super setEnabled: enabled];
+    [self setNeedsDisplay];
 }
 
 @end

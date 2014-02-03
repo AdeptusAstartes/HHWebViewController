@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ArrowView.h"
+#import "ArrowBarButton.h"
 
 @interface HHWebViewController : UIViewController <UIWebViewDelegate, UIScrollViewDelegate> {
     NSURL *url;
@@ -24,6 +24,7 @@
     UIBarButtonItem *stopButton;
     UIBarButtonItem *actionButton;
     UIBarButtonItem *readerButton;
+    UIBarButtonItem *flexiblespace;
     
     int webViewLoadingItems;
     

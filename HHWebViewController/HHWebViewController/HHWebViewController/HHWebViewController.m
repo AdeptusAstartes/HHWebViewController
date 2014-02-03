@@ -72,30 +72,6 @@
     [self.navigationController setToolbarHidden:YES animated: animated];
 }
 
-
--(void) createOrUpdateControls {
-    if (self.shouldShowControls) {
-        self.navigationController.toolbarHidden = NO;
-        
-        float spacerWidth = 10.0f;
-        
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            spacerWidth = 35.0f;
-        }
-        
-        if (backButton == nil) {
-            backButton = [[UIBarButtonItem alloc] initWithCustomView: [ArrowView backButtonView]];
-        }
-        
-        if (forwardButton == nil) {
-            forwardButton = [[UIBarButtonItem alloc] initWithCustomView: [ArrowView forwardButtonView]];
-        }
-
-        [self setToolbarItems: @[backButton, forwardButton]];
-    }
-}
-
-
 #pragma mark -
 #pragma mark Rotation
 -(BOOL) shouldAutorotate {
@@ -124,6 +100,7 @@
     }
         
     webViewLoadingItems++;
+    [self createOrUpdateControls];
 }
 
 
@@ -132,6 +109,7 @@
     
     if (webViewLoadingItems <= 0) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        [self createOrUpdateControls];
 
     }
     
@@ -144,6 +122,7 @@
     
     if (webViewLoadingItems <= 0) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        [self createOrUpdateControls];
     }
 
 }
@@ -172,6 +151,84 @@
     }
     previousContentDelta = delta;
 }
+
+#pragma mark -
+#pragma mark Controls
+-(void) createOrUpdateControls {
+    if (self.shouldShowControls) {
+        self.navigationController.toolbarHidden = NO;
+        
+        float spacerWidth = 10.0f;
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            spacerWidth = 35.0f;
+        }
+        
+        if (flexiblespace == nil) {
+            flexiblespace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemFlexibleSpace target: nil action: nil];
+        }
+        
+        if (backButton == nil) {
+            backButton = [[UIBarButtonItem alloc] initWithCustomView: [ArrowBarButton backButtonViewWithTarget: self action: @selector(backButtonHit:)]];;
+        }
+        
+        if (forwardButton == nil) {
+            forwardButton = [[UIBarButtonItem alloc] initWithCustomView: [ArrowBarButton forwardButtonViewWithTarget: self action: @selector(forwardButtonHit:)]];
+        }
+        
+        if (reloadButton == nil) {
+            reloadButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemRefresh target: self action: @selector(reloadHit:)];
+        }
+        
+        if (stopButton == nil) {
+            stopButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemStop target: self action: @selector(stopHit:)];
+        }
+        
+        if (actionButton == nil) {
+            actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemAction target: self action: @selector(actionHit:)];
+        }
+        
+        if (readerButton == nil) {
+            readerButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemAction target: self action: @selector(actionHit:)];
+        }
+        
+        if (webViewLoadingItems > 0) {
+            [self setToolbarItems: @[backButton, forwardButton, flexiblespace, stopButton, flexiblespace, actionButton, flexiblespace, readerButton]];
+        } else {
+            [self setToolbarItems: @[backButton, forwardButton, flexiblespace, reloadButton, flexiblespace, actionButton, flexiblespace, readerButton]];
+        }
+        
+        backButton.enabled = self.webView.canGoBack;
+        forwardButton.enabled = self.webView.canGoForward;
+    }
+}
+
+-(void) backButtonHit: (id) sender {
+    if (self.webView.canGoBack) {
+        [self.webView goBack];
+    }
+}
+
+-(void) forwardButtonHit: (id) sender {
+    if (self.webView.canGoForward) {
+        [self.webView goForward];
+    }
+}
+
+-(void) reloadHit: (id) sender {
+    [self.webView reload];
+}
+
+-(void) stopHit: (id) sender {
+    [self.webView stopLoading];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+}
+
+-(void) actionHit: (id) sender {
+    UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[self.webView.request.URL] applicationActivities: nil];
+    [self presentViewController:activityController animated:YES completion:nil];
+}
+
 
 -(void) showUI {
     if (self.shouldHideNavBarOnScroll) {
