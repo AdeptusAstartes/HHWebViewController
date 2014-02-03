@@ -16,8 +16,10 @@
 
 @synthesize url;
 @synthesize webView;
+@synthesize toolBar;
 @synthesize shouldHideNavBarOnScroll;
 @synthesize shouldHideStatusBarOnScroll;
+@synthesize shouldHideToolBarOnScroll;
 
 -(instancetype) initWithURL:(NSURL *)_url {
     self = [super initWithNibName: nil bundle: nil];
@@ -26,6 +28,7 @@
         self.url = _url;
         self.shouldHideNavBarOnScroll = YES;
         self.shouldHideStatusBarOnScroll = YES;
+        self.shouldHideToolBarOnScroll = YES;
     }
     
     return self;
@@ -40,6 +43,8 @@
     self.webView.delegate = self;
     self.webView.scrollView.delegate = self;
     [self.view addSubview: self.webView];
+    
+    self.navigationController.toolbarHidden = NO;
 }
 
 -(void)viewDidLoad {
@@ -139,6 +144,10 @@
             [[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation:UIStatusBarAnimationFade];
         }
     }
+    
+    if (self.shouldHideToolBarOnScroll) {
+        [self.navigationController setToolbarHidden: NO animated: YES];
+    }
 }
 
 -(void) hideNavBar {
@@ -156,6 +165,10 @@
             // iOS 6
             [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
         }
+    }
+    
+    if (self.shouldHideToolBarOnScroll) {
+        [self.navigationController setToolbarHidden: YES animated: YES];
     }
 }
 

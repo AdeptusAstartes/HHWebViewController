@@ -11,8 +11,10 @@
 @interface HHWebViewController : UIViewController <UIWebViewDelegate, UIScrollViewDelegate> {
     NSURL *url;
     UIWebView *webView;
+    UIToolbar *toolBar;
     BOOL shouldHideNavBarOnScroll;
     BOOL shouldHideStatusBarOnScroll;
+    BOOL shouldHideToolBarOnScroll;
     
     int webViewLoadingItems;
     
@@ -23,8 +25,10 @@
 
 @property (nonatomic, strong) NSURL *url;
 @property (nonatomic, strong) UIWebView *webView;
+@property (nonatomic, strong) UIToolbar *toolBar;
 @property (nonatomic, assign) BOOL shouldHideNavBarOnScroll;
 @property (nonatomic, assign) BOOL shouldHideStatusBarOnScroll;
+@property (nonatomic, assign) BOOL shouldHideToolBarOnScroll;
 
 -(instancetype) initWithURL: (NSURL *) _url;
 -(void) loadURL: (NSURL *) _url;
