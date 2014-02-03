@@ -34,12 +34,15 @@
     return self;
 }
 
+#pragma mark -
+#pragma mark View Lifecyle
 -(void) loadView {
     self.view = [[UIView alloc] initWithFrame: [UIScreen mainScreen].bounds];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.view.autoresizesSubviews = YES;
     
     self.webView = [[UIWebView alloc] initWithFrame: self.view.frame];
+    self.webView.autoresizingMask = self.view.autoresizingMask;
     self.webView.delegate = self;
     self.webView.scrollView.delegate = self;
     [self.view addSubview: self.webView];
@@ -54,20 +57,23 @@
 
 }
 
+#pragma mark -
+#pragma mark Rotation
+-(BOOL) shouldAutorotate {
+    return YES;
+}
+
+-(NSUInteger) supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskAll;
+}
+
+
 -(BOOL) prefersStatusBarHidden {
     if (scrollingDown) {
         return YES;
     }
     
     return NO;
-}
-
--(void) loadURL:(NSURL *)_url {
-    if (![_url isEqual: self.url]) {
-        self.url = _url;
-    }
-    
-    [self.webView loadRequest: [NSURLRequest requestWithURL: _url]];
 }
 
 
@@ -119,16 +125,16 @@
     if (delta > 0.f && prevDelta <= 0.f) {
         //down
         scrollingDown = YES;
-        [self hideNavBar];
+        [self hideUI];
     } else if (delta < 0.f && prevDelta >= 0.f) {
         //up
         scrollingDown = NO;
-        [self showNavBar];
+        [self showUI];
     }
     previousContentDelta = delta;
 }
 
--(void) showNavBar {
+-(void) showUI {
     if (self.shouldHideNavBarOnScroll) {
         if (self.navigationController.navigationBarHidden) {
             [self.navigationController setNavigationBarHidden: NO animated: YES];
@@ -150,7 +156,7 @@
     }
 }
 
--(void) hideNavBar {
+-(void) hideUI {
     if (self.shouldHideNavBarOnScroll) {
         if (!self.navigationController.navigationBarHidden) {
             [self.navigationController setNavigationBarHidden: YES animated: YES];
@@ -170,6 +176,17 @@
     if (self.shouldHideToolBarOnScroll) {
         [self.navigationController setToolbarHidden: YES animated: YES];
     }
+}
+
+
+#pragma mark -
+#pragma mark Loading
+-(void) loadURL:(NSURL *)_url {
+    if (![_url isEqual: self.url]) {
+        self.url = _url;
+    }
+    
+    [self.webView loadRequest: [NSURLRequest requestWithURL: _url]];
 }
 
 
