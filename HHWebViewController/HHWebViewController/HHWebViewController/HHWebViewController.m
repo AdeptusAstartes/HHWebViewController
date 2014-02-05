@@ -58,7 +58,7 @@
     [super viewDidLoad];
     
     [self loadURL: self.url];
-
+    
 }
 
 -(void) viewWillAppear:(BOOL)animated {
@@ -91,6 +91,10 @@
     return NO;
 }
 
+-(UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
+    return UIStatusBarAnimationFade;
+}
+
 
 #pragma mark -
 #pragma mark UIWebViewDelegate
@@ -98,7 +102,7 @@
     if (webViewLoadingItems == 0) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     }
-        
+    
     webViewLoadingItems++;
     [self createOrUpdateControls];
 }
@@ -110,11 +114,11 @@
     if (webViewLoadingItems <= 0) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         [self createOrUpdateControls];
-
+        
     }
     
     self.navigationItem.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-
+    
 }
 
 -(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
@@ -124,7 +128,7 @@
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         [self createOrUpdateControls];
     }
-
+    
 }
 
 
@@ -243,6 +247,8 @@
     }
     
     if (self.shouldHideStatusBarOnScroll) {
+        [[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation:UIStatusBarAnimationFade];
+        
         if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
             [self prefersStatusBarHidden];
             [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
@@ -267,6 +273,8 @@
     }
     
     if (self.shouldHideStatusBarOnScroll) {
+        [[UIApplication sharedApplication] setStatusBarHidden: YES withAnimation:UIStatusBarAnimationFade];
+        
         if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
             [self prefersStatusBarHidden];
             [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
