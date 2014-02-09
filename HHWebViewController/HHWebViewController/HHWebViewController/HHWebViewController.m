@@ -21,12 +21,14 @@
 @synthesize shouldHideNavBarOnScroll;
 @synthesize shouldHideStatusBarOnScroll;
 @synthesize shouldHideToolBarOnScroll;
+@synthesize showControlsInNavBarOniPad;
 
 -(instancetype) initWithURL:(NSURL *)_url {
     self = [super initWithNibName: nil bundle: nil];
     
     if (self) {
         self.url = _url;
+        self.showControlsInNavBarOniPad = YES;
         self.shouldShowControls = YES;
         self.shouldHideNavBarOnScroll = YES;
         self.shouldHideStatusBarOnScroll = YES;
@@ -49,8 +51,6 @@
     self.webView.scrollView.delegate = self;
     [self.view addSubview: self.webView];
     
-    //self.toolBar = self.navigationController.toolbar;
-    
     [self createOrUpdateControls];
 }
 
@@ -69,7 +69,9 @@
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
     
-    [self.navigationController setToolbarHidden:YES animated: animated];
+    if (!self.showControlsInNavBarOniPad) {
+        [self.navigationController setToolbarHidden:YES animated: animated];
+    }
 }
 
 #pragma mark -
@@ -160,12 +162,17 @@
 #pragma mark Controls
 -(void) createOrUpdateControls {
     if (self.shouldShowControls) {
-        self.navigationController.toolbarHidden = NO;
+        
+        if (!self.showControlsInNavBarOniPad) {
+            self.navigationController.toolbarHidden = NO;
+        }
         
         float spacerWidth = 10.0f;
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            spacerWidth = 35.0f;
+            if (!self.showControlsInNavBarOniPad) {
+                spacerWidth = 35.0f;
+            }
         }
         
         if (flexiblespace == nil) {
@@ -196,11 +203,24 @@
             actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemAction target: self action: @selector(actionHit:)];
         }
         
+        NSArray *items = nil;
+        
         if (webViewLoadingItems > 0) {
-            [self setToolbarItems: @[backButton, forwardButton, flexiblespace, stopButton, flexiblespace, readerButton, flexiblespace, actionButton]];
+            items = @[backButton, forwardButton, flexiblespace, stopButton, flexiblespace, readerButton, flexiblespace, actionButton];
         } else {
-            [self setToolbarItems: @[backButton, forwardButton, flexiblespace, reloadButton, flexiblespace, readerButton, flexiblespace, actionButton]];
+            items = @[backButton, forwardButton, flexiblespace, reloadButton, flexiblespace, readerButton, flexiblespace, actionButton];
         }
+        
+        if ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
+            if (self.showControlsInNavBarOniPad) {
+                self.navigationItem.rightBarButtonItems = [[items reverseObjectEnumerator] allObjects];
+            } else {
+                self.toolbarItems = items;
+            }
+        } else {
+            self.toolbarItems = items;
+        }
+        
         
         backButton.enabled = self.webView.canGoBack;
         forwardButton.enabled = self.webView.canGoForward;
@@ -260,7 +280,9 @@
     
     if (self.shouldShowControls) {
         if (self.shouldHideToolBarOnScroll) {
-            [self.navigationController setToolbarHidden: NO animated: YES];
+            if (!self.showControlsInNavBarOniPad) {
+                [self.navigationController setToolbarHidden: NO animated: YES];
+            }
         }
     }
 }
@@ -286,7 +308,9 @@
     
     if (self.shouldShowControls) {
         if (self.shouldHideToolBarOnScroll) {
-            [self.navigationController setToolbarHidden: YES animated: YES];
+            if (!self.showControlsInNavBarOniPad) {
+                [self.navigationController setToolbarHidden: YES animated: YES];
+            }
         }
     }
 }

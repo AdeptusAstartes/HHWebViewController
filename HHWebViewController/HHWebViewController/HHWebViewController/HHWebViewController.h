@@ -16,6 +16,7 @@
     BOOL shouldHideNavBarOnScroll;
     BOOL shouldHideStatusBarOnScroll;
     BOOL shouldHideToolBarOnScroll;
+    BOOL showControlsInNavBarOniPad;
     
     UIBarButtonItem *backButton;
     UIBarButtonItem *forwardButton;
@@ -39,6 +40,7 @@
 @property (nonatomic, assign) BOOL shouldHideNavBarOnScroll;
 @property (nonatomic, assign) BOOL shouldHideStatusBarOnScroll;
 @property (nonatomic, assign) BOOL shouldHideToolBarOnScroll;
+@property (nonatomic, assign) BOOL showControlsInNavBarOniPad;
 
 -(instancetype) initWithURL: (NSURL *) _url;
 -(void) loadURL: (NSURL *) _url;
