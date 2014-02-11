@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HHWebViewController : UIViewController <UIWebViewDelegate, UIScrollViewDelegate> {
+@interface HHWebViewController : UIViewController <UIWebViewDelegate, UIScrollViewDelegate, UIGestureRecognizerDelegate> {
     NSURL *url;
     UIWebView *webView;
     UIToolbar *toolBar;

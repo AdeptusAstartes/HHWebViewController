@@ -57,6 +57,8 @@
 -(void)viewDidLoad {
     [super viewDidLoad];
     
+    self.navigationController.interactivePopGestureRecognizer.delegate = self;
+    
     [self loadURL: self.url];
     
 }
@@ -68,6 +70,8 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation: UIStatusBarAnimationFade];
     
     if (!self.showControlsInNavBarOniPad) {
         [self.navigationController setToolbarHidden:YES animated: animated];
@@ -162,18 +166,6 @@
 #pragma mark Controls
 -(void) createOrUpdateControls {
     if (self.shouldShowControls) {
-        
-        if (!self.showControlsInNavBarOniPad) {
-            self.navigationController.toolbarHidden = NO;
-        }
-        
-        float spacerWidth = 10.0f;
-        
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            if (!self.showControlsInNavBarOniPad) {
-                spacerWidth = 35.0f;
-            }
-        }
         
         if (flexiblespace == nil) {
             flexiblespace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemFlexibleSpace target: nil action: nil];
@@ -309,7 +301,7 @@
     if (self.shouldShowControls) {
         if (self.shouldHideToolBarOnScroll) {
             if (!self.showControlsInNavBarOniPad) {
-                [self.navigationController setToolbarHidden: YES animated: YES];
+                [self.navigationController setToolbarHidden: YES animated: YES];  //
             }
         }
     }
@@ -331,6 +323,18 @@
     shouldShowControls = _shouldShowControls;
     
     [self createOrUpdateControls];
+}
+
+-(void) setShowControlsInNavBarOniPad:(BOOL)_showControlsInNavBarOniPad {
+    if (_showControlsInNavBarOniPad) {
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            showControlsInNavBarOniPad = _showControlsInNavBarOniPad;
+        } else {
+            showControlsInNavBarOniPad = NO;
+        }
+    } else {
+        showControlsInNavBarOniPad = _showControlsInNavBarOniPad;
+    }
 }
 
 
