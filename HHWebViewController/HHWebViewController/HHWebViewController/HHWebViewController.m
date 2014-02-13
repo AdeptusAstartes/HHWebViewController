@@ -33,6 +33,8 @@
         self.shouldHideNavBarOnScroll = YES;
         self.shouldHideStatusBarOnScroll = YES;
         self.shouldHideToolBarOnScroll = YES;
+        hadStatusBarHidden = [[UIApplication sharedApplication] isStatusBarHidden];
+        isExitingScreen = NO;
     }
     
     return self;
@@ -49,6 +51,7 @@
     self.webView.autoresizingMask = self.view.autoresizingMask;
     self.webView.delegate = self;
     self.webView.scrollView.delegate = self;
+    self.webView.scalesPageToFit = YES;
     [self.view addSubview: self.webView];
     
     [self createOrUpdateControls];
@@ -66,16 +69,35 @@
 -(void) viewWillAppear:(BOOL)animated {
     NSAssert(self.navigationController, @"HHWebViewController must be contained in a navigation controller.");
     [super viewWillAppear: animated];
+    
+    if (self.isMovingToParentViewController) {
+        hadToolBarHidden = self.navigationController.toolbarHidden;
+    }
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
     
-    [[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation: UIStatusBarAnimationFade];
-    
-    if (!self.showControlsInNavBarOniPad) {
-        [self.navigationController setToolbarHidden:YES animated: animated];
+    //force the status bar and nav toolbar back to their original states when this viewController is being popped off stack
+    if (self.isMovingFromParentViewController) {
+        isExitingScreen = YES;
+        
+        [[UIApplication sharedApplication] setStatusBarHidden: hadStatusBarHidden withAnimation:UIStatusBarAnimationFade];
+        [self.navigationController setToolbarHidden: hadToolBarHidden animated: animated];
+        
+        if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+            [self prefersStatusBarHidden];
+            [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
+        } else {
+            // iOS 6
+            [[UIApplication sharedApplication] setStatusBarHidden: hadStatusBarHidden withAnimation:UIStatusBarAnimationFade];
+        }
     }
+    
+    
+    //if (!self.showControlsInNavBarOniPad) {
+    //    [self.navigationController setToolbarHidden: YES animated: animated];
+    //}
 }
 
 #pragma mark -
@@ -90,6 +112,10 @@
 
 
 -(BOOL) prefersStatusBarHidden {
+    if (isExitingScreen) {
+        return hadStatusBarHidden;
+    }
+    
     if (scrollingDown) {
         return YES;
     }
@@ -268,6 +294,7 @@
             // iOS 6
             [[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation:UIStatusBarAnimationFade];
         }
+        
     }
     
     if (self.shouldShowControls) {
@@ -343,7 +370,6 @@
 }
 
 @end
-
 
 
 #pragma mark -

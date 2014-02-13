@@ -31,6 +31,9 @@
     float initialContentOffset;
     float previousContentDelta;
     BOOL scrollingDown;
+    BOOL hadStatusBarHidden;
+    BOOL hadToolBarHidden;
+    BOOL isExitingScreen;
 }
 
 @property (nonatomic, strong) NSURL *url;
@@ -46,6 +49,7 @@
 -(void) loadURL: (NSURL *) _url;
 
 @end
+
 
 typedef enum HHWebViewButtonType {
     kHHWebViewButtonTypeBackButton,
