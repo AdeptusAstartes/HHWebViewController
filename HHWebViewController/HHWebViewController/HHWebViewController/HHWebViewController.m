@@ -268,6 +268,15 @@
 
 -(void) actionHit: (id) sender {
     UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[self.webView.request.URL] applicationActivities: nil];
+    
+    if ([activityController respondsToSelector: @selector(popoverPresentationController)]) {
+        if ([activityController.popoverPresentationController respondsToSelector:@selector(setSourceView:)]) {
+            activityController.popoverPresentationController.sourceView = self.view;
+            activityController.popoverPresentationController.sourceRect = CGRectMake(0,-50, 100, 100);
+            activityController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+        }
+    }
+    
     [self presentViewController:activityController animated:YES completion:nil];
 }
 
