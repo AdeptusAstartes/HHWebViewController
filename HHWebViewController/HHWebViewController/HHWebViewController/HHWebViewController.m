@@ -18,10 +18,12 @@
 @synthesize webView;
 @synthesize toolBar;
 @synthesize shouldShowControls;
+@synthesize shouldControlsImmediately;
 @synthesize shouldHideNavBarOnScroll;
 @synthesize shouldHideStatusBarOnScroll;
 @synthesize shouldHideToolBarOnScroll;
 @synthesize showControlsInNavBarOniPad;
+@synthesize shouldPreventChromeHidingOnScrollOnInitialLoad;
 
 -(instancetype) initWithURL:(NSURL *)_url {
     self = [super initWithNibName: nil bundle: nil];
@@ -30,9 +32,11 @@
         self.url = _url;
         self.showControlsInNavBarOniPad = YES;
         self.shouldShowControls = YES;
+        self.shouldControlsImmediately = YES;
         self.shouldHideNavBarOnScroll = YES;
         self.shouldHideStatusBarOnScroll = YES;
         self.shouldHideToolBarOnScroll = YES;
+        self.shouldPreventChromeHidingOnScrollOnInitialLoad = NO;
         hadStatusBarHidden = [[UIApplication sharedApplication] isStatusBarHidden];
         isExitingScreen = NO;
     }
@@ -94,10 +98,7 @@
         }
     }
     
-    
-    //if (!self.showControlsInNavBarOniPad) {
-    //    [self.navigationController setToolbarHidden: YES animated: animated];
-    //}
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: NO];
 }
 
 #pragma mark -
@@ -144,6 +145,12 @@
     webViewLoadingItems--;
     
     if (webViewLoadingItems <= 0) {
+        if (self.shouldPreventChromeHidingOnScrollOnInitialLoad) {
+            self.shouldHideNavBarOnScroll = YES;
+            self.shouldHideStatusBarOnScroll = YES;
+            self.shouldHideToolBarOnScroll = YES;
+        }
+        
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         [self createOrUpdateControls];
         
@@ -157,6 +164,12 @@
     webViewLoadingItems--;
     
     if (webViewLoadingItems <= 0) {
+        if (self.shouldPreventChromeHidingOnScrollOnInitialLoad) {
+            self.shouldHideNavBarOnScroll = YES;
+            self.shouldHideStatusBarOnScroll = YES;
+            self.shouldHideToolBarOnScroll = YES;
+        }
+        
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         [self createOrUpdateControls];
     }
@@ -242,6 +255,10 @@
         
         backButton.enabled = self.webView.canGoBack;
         forwardButton.enabled = self.webView.canGoForward;
+        
+        if (self.shouldControlsImmediately) {
+            [self showUI];
+        }
     }
 }
 
@@ -272,7 +289,7 @@
     if ([activityController respondsToSelector: @selector(popoverPresentationController)]) {
         if ([activityController.popoverPresentationController respondsToSelector:@selector(setSourceView:)]) {
             activityController.popoverPresentationController.sourceView = self.view;
-            activityController.popoverPresentationController.sourceRect = CGRectMake(0,-50, 100, 100);
+            activityController.popoverPresentationController.barButtonItem = (UIBarButtonItem *)sender;
             activityController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
         }
     }
@@ -373,6 +390,15 @@
     }
 }
 
+-(void) setShouldPreventChromeHidingOnScrollOnInitialLoad:(BOOL)_shouldPreventChromeHidingOnScrollOnInitialLoad {
+    shouldPreventChromeHidingOnScrollOnInitialLoad = _shouldPreventChromeHidingOnScrollOnInitialLoad;
+    
+    if (shouldPreventChromeHidingOnScrollOnInitialLoad) {
+        self.shouldHideNavBarOnScroll = NO;
+        self.shouldHideStatusBarOnScroll = NO;
+        self.shouldHideToolBarOnScroll = NO;
+    }
+}
 
 -(void) dealloc {
     [self.webView stopLoading];
@@ -486,6 +512,9 @@
     [super setEnabled: enabled];
     [self setNeedsDisplay];
 }
+
+
+
 
 @end
 

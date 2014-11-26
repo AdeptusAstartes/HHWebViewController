@@ -13,10 +13,12 @@
     UIWebView *webView;
     UIToolbar *toolBar;
     BOOL shouldShowControls;
+    BOOL shouldControlsImmediately;
     BOOL shouldHideNavBarOnScroll;
     BOOL shouldHideStatusBarOnScroll;
     BOOL shouldHideToolBarOnScroll;
     BOOL showControlsInNavBarOniPad;
+    BOOL shouldPreventChromeHidingOnScrollOnInitialLoad;
     
     UIBarButtonItem *backButton;
     UIBarButtonItem *forwardButton;
@@ -40,10 +42,12 @@
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) UIToolbar *toolBar;
 @property (nonatomic, assign) BOOL shouldShowControls;
+@property (nonatomic, assign) BOOL shouldControlsImmediately;
 @property (nonatomic, assign) BOOL shouldHideNavBarOnScroll;
 @property (nonatomic, assign) BOOL shouldHideStatusBarOnScroll;
 @property (nonatomic, assign) BOOL shouldHideToolBarOnScroll;
 @property (nonatomic, assign) BOOL showControlsInNavBarOniPad;
+@property (nonatomic, assign) BOOL shouldPreventChromeHidingOnScrollOnInitialLoad;
 
 -(instancetype) initWithURL: (NSURL *) _url;
 -(void) loadURL: (NSURL *) _url;
