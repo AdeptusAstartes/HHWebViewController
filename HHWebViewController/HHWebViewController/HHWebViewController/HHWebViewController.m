@@ -24,6 +24,8 @@
 @synthesize shouldHideToolBarOnScroll;
 @synthesize showControlsInNavBarOniPad;
 @synthesize shouldPreventChromeHidingOnScrollOnInitialLoad;
+@synthesize customShareMessage;
+@synthesize shareCompletionBlock;
 
 -(instancetype) initWithURL:(NSURL *)_url {
     self = [super initWithNibName: nil bundle: nil];
@@ -284,7 +286,15 @@
 }
 
 -(void) actionHit: (id) sender {
-    UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[self.webView.request.URL] applicationActivities: nil];
+    NSArray *activityItems = nil;
+    
+    if (self.customShareMessage != nil) {
+        activityItems = @[self.url, customShareMessage];
+    } else {
+        activityItems = @[self.url];
+    }
+    
+    UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems: activityItems applicationActivities: nil];
     
     if ([activityController respondsToSelector: @selector(popoverPresentationController)]) {
         if ([activityController.popoverPresentationController respondsToSelector:@selector(setSourceView:)]) {
@@ -292,6 +302,16 @@
             activityController.popoverPresentationController.barButtonItem = (UIBarButtonItem *)sender;
             activityController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
         }
+    }
+    
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+        [activityController setCompletionWithItemsHandler: ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
+            [self activityViewControllerCompletionHandlerWithActivityType: activityType completed: completed returnedItems: returnedItems activityError: activityError sharedURL: self.url];
+        }];
+    } else {
+        [activityController setCompletionHandler: ^(NSString *activityType, BOOL completed) {
+            [self activityViewControllerCompletionHandlerWithActivityType: activityType completed: completed returnedItems: @[self.url] activityError: nil sharedURL: self.url];
+        }];
     }
     
     [self presentViewController:activityController animated:YES completion:nil];
@@ -397,6 +417,12 @@
         self.shouldHideNavBarOnScroll = NO;
         self.shouldHideStatusBarOnScroll = NO;
         self.shouldHideToolBarOnScroll = NO;
+    }
+}
+
+-(void) activityViewControllerCompletionHandlerWithActivityType: (NSString *)activityType completed: (BOOL)completed returnedItems: (NSArray *)returnedItems activityError: (NSError *)activityError sharedURL: (NSURL *) sharedURL {
+    if (self.shareCompletionBlock != nil) {
+        self.shareCompletionBlock(activityType, completed, returnedItems, activityError, self.url);
     }
 }
 

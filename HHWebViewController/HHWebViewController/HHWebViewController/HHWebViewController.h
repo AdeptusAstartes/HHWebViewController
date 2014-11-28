@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^HHWebViewControllerShareCompletionBlock)(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError, NSURL *sharedURL);
+
 @interface HHWebViewController : UIViewController <UIWebViewDelegate, UIScrollViewDelegate, UIGestureRecognizerDelegate> {
     NSURL *url;
     UIWebView *webView;
@@ -36,6 +38,9 @@
     BOOL hadStatusBarHidden;
     BOOL hadToolBarHidden;
     BOOL isExitingScreen;
+    
+    HHWebViewControllerShareCompletionBlock shareCompletionBlock;
+    NSString *customShareMessage;
 }
 
 @property (nonatomic, strong) NSURL *url;
@@ -48,6 +53,8 @@
 @property (nonatomic, assign) BOOL shouldHideToolBarOnScroll;
 @property (nonatomic, assign) BOOL showControlsInNavBarOniPad;
 @property (nonatomic, assign) BOOL shouldPreventChromeHidingOnScrollOnInitialLoad;
+@property (nonatomic, strong) NSString *customShareMessage;
+@property (nonatomic, copy) HHWebViewControllerShareCompletionBlock shareCompletionBlock;
 
 -(instancetype) initWithURL: (NSURL *) _url;
 -(void) loadURL: (NSURL *) _url;
