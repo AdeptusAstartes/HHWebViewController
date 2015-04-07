@@ -78,6 +78,10 @@
     
     if (self.isMovingToParentViewController) {
         hadToolBarHidden = self.navigationController.toolbarHidden;
+        
+        if (self.shouldControlsImmediately) {
+            [self showUI];
+        }
     }
 }
 
@@ -136,10 +140,10 @@
 -(void)webViewDidStartLoad:(UIWebView *)_webView {
     if (webViewLoadingItems == 0) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        [self createOrUpdateControls];
     }
     
     webViewLoadingItems++;
-    [self createOrUpdateControls];
 }
 
 
@@ -155,7 +159,6 @@
         
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         [self createOrUpdateControls];
-        
     }
     
     self.navigationItem.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
@@ -257,10 +260,6 @@
         
         backButton.enabled = self.webView.canGoBack;
         forwardButton.enabled = self.webView.canGoForward;
-        
-        if (self.shouldControlsImmediately) {
-            [self showUI];
-        }
     }
 }
 
@@ -289,9 +288,9 @@
     NSArray *activityItems = nil;
     
     if (self.customShareMessage != nil) {
-        activityItems = @[self.url, customShareMessage];
+        activityItems = @[self, customShareMessage];
     } else {
-        activityItems = @[self.url];
+        activityItems = @[self];
     }
     
     UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems: activityItems applicationActivities: nil];
@@ -428,6 +427,20 @@
 
 -(void) dealloc {
     [self.webView stopLoading];
+}
+
+#pragma mark -
+#pragma mark UIActivityItemSource Protocol
+-(id) activityViewController:(UIActivityViewController *)activityViewController itemForActivityType:(NSString *)activityType {
+    return self.url;
+}
+
+-(id) activityViewControllerPlaceholderItem:(UIActivityViewController *)activityViewController {
+    return self.url;
+}
+
+-(NSString *) activityViewController:(UIActivityViewController *)activityViewController subjectForActivityType:(NSString *)activityType {
+    return self.navigationItem.title;
 }
 
 @end
