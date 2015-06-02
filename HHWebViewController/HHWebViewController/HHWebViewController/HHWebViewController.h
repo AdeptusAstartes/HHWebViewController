@@ -36,6 +36,7 @@ typedef void(^HHWebViewControllerShareCompletionBlock)(NSString *activityType, B
     float previousContentDelta;
     BOOL scrollingDown;
     BOOL hadStatusBarHidden;
+    BOOL hadNavBarHidden;
     BOOL hadToolBarHidden;
     BOOL isExitingScreen;
     

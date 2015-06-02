@@ -77,6 +77,7 @@
     [super viewWillAppear: animated];
     
     if (self.isMovingToParentViewController) {
+        hadNavBarHidden = self.navigationController.navigationBarHidden;
         hadToolBarHidden = self.navigationController.toolbarHidden;
         
         if (self.shouldControlsImmediately) {
@@ -93,6 +94,7 @@
         isExitingScreen = YES;
         
         [[UIApplication sharedApplication] setStatusBarHidden: hadStatusBarHidden withAnimation:UIStatusBarAnimationFade];
+        [self.navigationController setNavigationBarHidden: hadNavBarHidden animated: animated];
         [self.navigationController setToolbarHidden: hadToolBarHidden animated: animated];
         
         if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
