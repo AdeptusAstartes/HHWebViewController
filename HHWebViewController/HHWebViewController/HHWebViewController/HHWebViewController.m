@@ -308,9 +308,12 @@
             [self activityViewControllerCompletionHandlerWithActivityType: activityType completed: completed returnedItems: returnedItems activityError: activityError sharedURL: self.url];
         }];
     } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         [activityController setCompletionHandler: ^(NSString *activityType, BOOL completed) {
             [self activityViewControllerCompletionHandlerWithActivityType: activityType completed: completed returnedItems: @[self.url] activityError: nil sharedURL: self.url];
         }];
+#pragma clang diagnostic pop
     }
     
     [self presentViewController:activityController animated:YES completion:nil];

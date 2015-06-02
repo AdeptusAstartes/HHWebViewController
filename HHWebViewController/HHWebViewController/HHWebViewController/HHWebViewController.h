@@ -10,7 +10,7 @@
 
 typedef void(^HHWebViewControllerShareCompletionBlock)(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError, NSURL *sharedURL);
 
-@interface HHWebViewController : UIViewController <UIWebViewDelegate, UIScrollViewDelegate, UIGestureRecognizerDelegate> {
+@interface HHWebViewController : UIViewController <UIWebViewDelegate, UIScrollViewDelegate, UIGestureRecognizerDelegate, UIActivityItemSource> {
     NSURL *url;
     UIWebView *webView;
     UIToolbar *toolBar;
@@ -71,9 +71,6 @@ typedef enum HHWebViewButtonType {
 @interface HHDynamicBarButton : UIButton {
     HHWebViewButtonType hhWebViewButtonType;
 }
-
-@property (nonatomic, assign) BOOL enabled;
-@property (nonatomic, assign) BOOL highlighted;
 
 +(instancetype) backButtonViewWithTarget: (id) _target action: (SEL) _action;
 +(instancetype) forwardButtonViewWithTarget: (id) _target action: (SEL) _action;
