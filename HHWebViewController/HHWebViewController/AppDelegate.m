@@ -18,6 +18,7 @@
     self.window.backgroundColor = [UIColor whiteColor];
     
     HHWebViewController *webViewController = [[HHWebViewController alloc] initWithURL: [NSURL URLWithString: @"http://www.google.com"]];
+    
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: webViewController];
     [self.window addSubview: navController.view];
     self.window.rootViewController = navController;

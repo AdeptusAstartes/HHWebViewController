@@ -22,6 +22,9 @@ typedef void(^HHWebViewControllerShareCompletionBlock)(NSString *activityType, B
     BOOL showControlsInNavBarOniPad;
     BOOL shouldPreventChromeHidingOnScrollOnInitialLoad;
     
+    BOOL shouldShowActionButton;
+    BOOL shouldShowReaderButton;
+    
     UIBarButtonItem *backButton;
     UIBarButtonItem *forwardButton;
     UIBarButtonItem *reloadButton;
@@ -42,6 +45,8 @@ typedef void(^HHWebViewControllerShareCompletionBlock)(NSString *activityType, B
     
     HHWebViewControllerShareCompletionBlock shareCompletionBlock;
     NSString *customShareMessage;
+    
+    __weak id<UIWebViewDelegate> webViewDelegate;
 }
 
 @property (nonatomic, strong) NSURL *url;
@@ -56,6 +61,9 @@ typedef void(^HHWebViewControllerShareCompletionBlock)(NSString *activityType, B
 @property (nonatomic, assign) BOOL shouldPreventChromeHidingOnScrollOnInitialLoad;
 @property (nonatomic, strong) NSString *customShareMessage;
 @property (nonatomic, copy) HHWebViewControllerShareCompletionBlock shareCompletionBlock;
+@property (nonatomic, weak) id<UIWebViewDelegate> webViewDelegate;
+@property (nonatomic, assign) BOOL shouldShowActionButton;
+@property (nonatomic, assign) BOOL shouldShowReaderButton;
 
 -(instancetype) initWithURL: (NSURL *) _url;
 -(void) loadURL: (NSURL *) _url;

@@ -26,6 +26,9 @@
 @synthesize shouldPreventChromeHidingOnScrollOnInitialLoad;
 @synthesize customShareMessage;
 @synthesize shareCompletionBlock;
+@synthesize webViewDelegate;
+@synthesize shouldShowActionButton;
+@synthesize shouldShowReaderButton;
 
 -(instancetype) initWithURL:(NSURL *)_url {
     self = [super initWithNibName: nil bundle: nil];
@@ -39,6 +42,8 @@
         self.shouldHideStatusBarOnScroll = YES;
         self.shouldHideToolBarOnScroll = YES;
         self.shouldPreventChromeHidingOnScrollOnInitialLoad = NO;
+        self.shouldShowActionButton = YES;
+        self.shouldShowReaderButton = YES;
         hadStatusBarHidden = [[UIApplication sharedApplication] isStatusBarHidden];
         isExitingScreen = NO;
     }
@@ -77,8 +82,8 @@
     [super viewWillAppear: animated];
     
     if (self.isMovingToParentViewController) {
-        hadNavBarHidden = self.navigationController.navigationBarHidden;
         hadToolBarHidden = self.navigationController.toolbarHidden;
+        hadNavBarHidden = self.navigationController.navigationBarHidden;
         
         if (self.shouldControlsImmediately) {
             [self showUI];
@@ -139,7 +144,23 @@
 
 #pragma mark -
 #pragma mark UIWebViewDelegate
+-(BOOL) webView:(UIWebView *)_webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    if (self.webViewDelegate != nil) {
+        if ([self.webViewDelegate respondsToSelector: @selector(webView:shouldStartLoadWithRequest:navigationType:)]) {
+            return [self.webViewDelegate webView: _webView shouldStartLoadWithRequest: request navigationType: navigationType];
+        }
+    }
+    
+    return YES;
+}
+
 -(void)webViewDidStartLoad:(UIWebView *)_webView {
+    if (self.webViewDelegate != nil) {
+        if ([self.webViewDelegate respondsToSelector: @selector(webViewDidStartLoad:)]) {
+            [self.webViewDelegate webViewDidStartLoad: _webView];
+        }
+    }
+    
     if (webViewLoadingItems == 0) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [self createOrUpdateControls];
@@ -150,6 +171,12 @@
 
 
 -(void)webViewDidFinishLoad:(UIWebView *)_webView {
+    if (self.webViewDelegate != nil) {
+        if ([self.webViewDelegate respondsToSelector: @selector(webViewDidFinishLoad:)]) {
+            [self.webViewDelegate webViewDidFinishLoad: _webView];
+        }
+    }
+    
     webViewLoadingItems--;
     
     if (webViewLoadingItems <= 0) {
@@ -167,7 +194,13 @@
     
 }
 
--(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+-(void)webView:(UIWebView *)_webView didFailLoadWithError:(NSError *)error {
+    if (self.webViewDelegate != nil) {
+        if ([self.webViewDelegate respondsToSelector: @selector(webView:didFailLoadWithError:)]) {
+            [self.webViewDelegate webView: _webView didFailLoadWithError: error];
+        }
+    }
+    
     webViewLoadingItems--;
     
     if (webViewLoadingItems <= 0) {
@@ -180,7 +213,6 @@
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         [self createOrUpdateControls];
     }
-    
 }
 
 
@@ -241,12 +273,26 @@
             actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemAction target: self action: @selector(actionHit:)];
         }
         
-        NSArray *items = nil;
+        NSMutableArray *items = [NSMutableArray array];
+        
+        [items addObject: backButton];
+        [items addObject: forwardButton];
+        [items addObject: flexiblespace];
         
         if (webViewLoadingItems > 0) {
-            items = @[backButton, forwardButton, flexiblespace, stopButton, flexiblespace, readerButton, flexiblespace, actionButton];
+            [items addObject: stopButton];
         } else {
-            items = @[backButton, forwardButton, flexiblespace, reloadButton, flexiblespace, readerButton, flexiblespace, actionButton];
+            [items addObject: reloadButton];
+        }
+        
+        if (self.shouldShowReaderButton) {
+            [items addObject: flexiblespace];
+            [items addObject: readerButton];
+        }
+        
+        if (self.shouldShowActionButton) {
+            [items addObject: flexiblespace];
+            [items addObject: actionButton];
         }
         
         if ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
@@ -401,6 +447,18 @@
     
     [self createOrUpdateControls];
 }
+
+//-(void) setShouldShowActionButton:(BOOL)_shouldShowActionButton {
+//    shouldShowActionButton = _shouldShowActionButton;
+//    
+//    [self createOrUpdateControls];
+//}
+//
+//-(void) setShouldShowReaderButton:(BOOL)_shouldShowReaderButton {
+//    shouldShowReaderButton = _shouldShowReaderButton;
+//    
+//    [self createOrUpdateControls];
+//}
 
 -(void) setShowControlsInNavBarOniPad:(BOOL)_showControlsInNavBarOniPad {
     if (_showControlsInNavBarOniPad) {
