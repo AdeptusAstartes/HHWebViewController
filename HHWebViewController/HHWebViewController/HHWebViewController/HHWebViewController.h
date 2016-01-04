@@ -25,6 +25,8 @@ typedef void(^HHWebViewControllerShareCompletionBlock)(NSString *activityType, B
     BOOL shouldShowActionButton;
     BOOL shouldShowReaderButton;
     
+    BOOL shouldIgnoreWebViewNavigationStackForBackForwardbuttons;
+    
     UIBarButtonItem *backButton;
     UIBarButtonItem *forwardButton;
     UIBarButtonItem *reloadButton;
@@ -64,6 +66,7 @@ typedef void(^HHWebViewControllerShareCompletionBlock)(NSString *activityType, B
 @property (nonatomic, weak) id<UIWebViewDelegate> webViewDelegate;
 @property (nonatomic, assign) BOOL shouldShowActionButton;
 @property (nonatomic, assign) BOOL shouldShowReaderButton;
+@property (nonatomic, assign) BOOL shouldIgnoreWebViewNavigationStackForBackForwardbuttons;
 
 -(instancetype) initWithURL: (NSURL *) _url;
 -(void) loadURL: (NSURL *) _url;

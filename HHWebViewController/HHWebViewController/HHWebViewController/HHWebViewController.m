@@ -29,6 +29,7 @@
 @synthesize webViewDelegate;
 @synthesize shouldShowActionButton;
 @synthesize shouldShowReaderButton;
+@synthesize shouldIgnoreWebViewNavigationStackForBackForwardbuttons;
 
 -(instancetype) initWithURL:(NSURL *)_url {
     self = [super initWithNibName: nil bundle: nil];
@@ -44,6 +45,7 @@
         self.shouldPreventChromeHidingOnScrollOnInitialLoad = NO;
         self.shouldShowActionButton = YES;
         self.shouldShowReaderButton = YES;
+        self.shouldIgnoreWebViewNavigationStackForBackForwardbuttons = NO;
         hadStatusBarHidden = [[UIApplication sharedApplication] isStatusBarHidden];
         isExitingScreen = NO;
     }
@@ -312,19 +314,33 @@
             self.toolbarItems = items;
         }
         
-        
-        backButton.enabled = self.webView.canGoBack;
-        forwardButton.enabled = self.webView.canGoForward;
+        if (self.shouldIgnoreWebViewNavigationStackForBackForwardbuttons) {
+            backButton.enabled = YES;
+            forwardButton.enabled = YES;
+        } else {
+            backButton.enabled = self.webView.canGoBack;
+            forwardButton.enabled = self.webView.canGoForward;
+        }
     }
 }
 
 -(void) backButtonHit: (id) sender {
+    if (self.shouldIgnoreWebViewNavigationStackForBackForwardbuttons) {
+        [self.webView goBack];
+        return;
+    }
+    
     if (self.webView.canGoBack) {
         [self.webView goBack];
     }
 }
 
 -(void) forwardButtonHit: (id) sender {
+    if (self.shouldIgnoreWebViewNavigationStackForBackForwardbuttons) {
+        [self.webView goForward];
+        return;
+    }
+    
     if (self.webView.canGoForward) {
         [self.webView goForward];
     }
